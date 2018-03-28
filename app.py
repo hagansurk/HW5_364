@@ -1,3 +1,4 @@
+## Created by Hagan Surkamer along with SI364 team ##
 import os
 from flask import Flask, render_template, session, redirect, url_for, flash, request
 from flask_script import Manager, Shell
@@ -180,7 +181,7 @@ def delete(lst):
     db.session.commit()
     flash("Deleted list "+lst)
     return redirect(url_for('all_lists'))
-    
+
 if __name__ == "__main__":
     db.create_all()
     manager.run()
