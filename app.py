@@ -131,7 +131,7 @@ def all_lists():
 
 # TODO 364: Update the all_lists.html template and the all_lists view function such that there is a delete button available for each ToDoList saved.
 # When you click on the delete button for each list, that list should get deleted -- this is also addressed in a later TODO.
-
+#DONE
 # Provided - see below for additional TODO
 @app.route('/list/<ident>',methods=["GET","POST"])
 def one_list(ident):
@@ -141,28 +141,46 @@ def one_list(ident):
     return render_template('list_tpl.html',todolist=lst,items=items,form=form)
 # TODO 364: Update the one_list view function and the list_tpl.html view file so that there is an Update button next to each todolist item, and the priority integer of that item can be updated. (This is also addressed in later TODOs.)
 # HINT: These template updates are minimal, but that small update(s) make(s) a big change in what you can do in the app! Check out the examples from previous classes for help.
-
+#DONE
 
 # TODO 364: Complete route to update an individual ToDo item's priority
 @app.route('/update/<item>',methods=["GET","POST"])
 def update(item):
-    pass # Replace with code
+    #pass # Replace with code
     # This code should use the form you created above for updating the specific item and manage the process of updating the item's priority.
     # Once it is updated, it should redirect to the page showing all the links to todo lists.
     # It should flash a message: Updated priority of <the description of that item>
     # HINT: What previous class example is extremely similar?
-
+    #print(item)
+    form = UpdatePriorityForm()
+    if request.method == 'GET':
+        n_pri = form.newPri.data
+        #print(n_pri)
+        it = TodoItem.query.filter_by(description=item).first()
+        it.priority = n_pri
+        #print(it.priority)
+        db.session.commit()
+        flash("Updated priority of the "+item)
+        return redirect(url_for('all_lists'))
+    return render_template('update_item.html',form=form, item=item)
 # TODO 364: Fill in the update_item.html template to work properly with this update route. (HINT: Compare against example!)
 
 # TODO 364: Complete route to delete a whole ToDoList
 @app.route('/delete/<lst>',methods=["GET","POST"])
 def delete(lst):
-    pass # Replace with code
+    #pass # Replace with code
     # This code should successfully delete the appropriate todolist
     # Should flash a message about what was deleted, e.g. Deleted list <title of list>
     # And should redirect the user to the page showing all the todo lists
     # HINT: Compare against what you've done for updating and class notes -- the goal here is very similar, and in some ways simpler.
-
+    #print(lst)
+    dele = TodoList.query.filter_by(title=lst).first()
+    #print(dele)
+    db.session.delete(dele)
+    db.session.commit()
+    flash("Deleted list "+lst)
+    return redirect(url_for('all_lists'))
+    
 if __name__ == "__main__":
     db.create_all()
     manager.run()
